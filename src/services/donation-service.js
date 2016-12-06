@@ -18,12 +18,17 @@ export default class DonationService {
     this.ea = ea;
     this.ac = ac;
     this.getCandidates();
-    this.getUsers();
   }
 
   getCandidates() {
     this.ac.get('/api/candidates').then(res => {
       this.candidates = res.content;
+    });
+  }
+
+  getDonations() {
+    this.ac.get('/api/donations').then(res => {
+      this.donations = res.content;
     });
   }
 
@@ -73,24 +78,18 @@ export default class DonationService {
   }
 
   login(email, password) {
-    const status = {
-      success: false,
-      message: 'Login Attempt Failed'
+    const user = {
+      email: email,
+      password: password
     };
-    for (let user of this.users) {
-      if (user.email === email && user.password === password) {
-        status.success = true;
-        status.message = 'logged in';
-      }
-    }
-    this.ea.publish(new LoginStatus(status));
+    this.ac.authenticate('/api/users/authenticate', user);
   }
-
   logout() {
     const status = {
       success: false,
       message: ''
     };
-    this.ea.publish(new LoginStatus(status));
+    this.ac.clearAuthentication();
+    this.ea.publish(new LoginStatus(new LoginStatus(status)));
   }
 }
