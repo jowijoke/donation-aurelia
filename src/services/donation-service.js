@@ -20,6 +20,10 @@ export default class DonationService {
     this.getCandidates();
   }
 
+  isAuthenticated() {
+    return this.ac.isAuthenticated();
+  }
+
   getCandidates() {
     this.ac.get('/api/candidates').then(res => {
       this.candidates = res.content;
